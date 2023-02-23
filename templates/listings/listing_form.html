@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+    <div class="container">
+        <br>
+        <br>
+                        <form method="post">{% csrf_token %}
+                            {% bootstrap_form form %}
+                            <br>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </form>
+
+
+{#        <form action="{% url 'create_listing' %}" method="post">#}
+{#            <div class="form-group row">#}
+{#                <div class="form-group col-md-9">#}
+{#                    <label for="sellingNumber">I have:</label>#}
+{#                    <input type="int" class="form-control" id="sellingNumber" aria-describedby="sellingNumberHelp"#}
+{#                           placeholder="1,000" value="{{ listing }}">#}
+{#                    <small id="sellingNumberHelp" class="form-text text-muted">Enter the number you are selling</small>#}
+{#                </div>#}
+{#                <div class="form-group col-md-3">#}
+{#                    <label for="inputState">Selling currency</label>#}
+{#                    <select id="inputState" class="form-control">#}
+{#                        <option selected>Currencies ...</option>#}
+{#                        <option>...</option>#}
+{#                    </select>#}
+{#                </div>#}
+{##}
+{#            </div>#}
+{#            <div class="form-group row">#}
+{#                <label for="sellingCurrency">Selling currency</label>#}
+{#                <input type="text" class="form-control" id="sellingCurrency" placeholder="Currency"#}
+{#                       value="{{ selling_currency }}">#}
+{#            </div>#}
+{#            <div class="form-check row">#}
+{#                <input type="checkbox" class="form-check-input" id="exampleCheck1">#}
+{#                <label class="form-check-label" for="exampleCheck1">Check me out</label>#}
+{#            </div>#}
+{#            <button type="create" class="btn btn-primary row">Create</button>#}
+{#        </form>#}
+        <br>
+        <br>
+    </div>
+
+{% endblock %}

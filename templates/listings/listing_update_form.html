@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+    <div class="container">
+        <br>
+        <br>
+        <form method="post">{% csrf_token %}
+            {% bootstrap_form form %}
+{#            <input class="form-control" type="submit" value="Update">#}
+            <br>
+            <button type="submit" class="btn btn-primary">Update</button>
+            {% if origin == 'detail_listing' %}
+            <a href="{% url 'detail_listing' object.id %}" class="btn btn-simple btn-large btn-default">Cancel</a>
+            {% else %}
+                <a href="{% url 'my_sellings' %}" class="btn btn-simple btn-large btn-default">Cancel</a>
+            {% endif %}
+{#            <button type="submit" class="btn btn-primary">Update</button>#}
+        </form>
+        <br>
+        <br>
+    </div>
+
+{% endblock %}
