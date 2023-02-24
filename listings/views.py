@@ -103,7 +103,7 @@ def range_slider(request):
     return render(request, 'listings/search_range_slider.html')
 
 class UpdateListing(LoginRequiredMixin, UpdateView):
-    fields = ('selling', 'buying', 'purpose')
+    fields = ('selling', 'buying', 'purpose', 'is_published')
     # fields = '__all__'
     model = Listing
     template_name_suffix = '_update_form'
