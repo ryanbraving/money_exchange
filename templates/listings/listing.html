@@ -123,10 +123,19 @@
             <h5 class='text-primary'>Exchange status</h5>
             {#            <br>#}
             <div class="progress" style="height: 20px;">
-                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                     style="width: 20%" aria-valuenow="25"
-                     aria-valuemin="0" aria-valuemax="100">Listed
-                </div>
+                {% if listing.is_published %}
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                         style="width: 20%" aria-valuenow="25"
+                         aria-valuemin="0" aria-valuemax="100">Listed
+                    </div>
+                {% else %}
+                    <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 20%"
+                         aria-valuenow="25"
+                         aria-valuemin="0" aria-valuemax="100">
+                        Awaiting money (seller)
+
+                    </div>
+                {% endif %}
                 {% if listing.is_seller_deposited %}
                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
                          style="width: 20%"
@@ -202,153 +211,161 @@
         <div class="container">
             {#            <a href="{% url 'listings' %}" class="btn btn-light mb-4">Back To Listings</a>#}
 
-            {% if user == listing.user %}
-                <h6 class="text-primary">This is your own listing ...</h6>
-            {% endif %}
+
+            <div class="row d-flex justify-content-between">
+                <h6 class="text-primary">Listing ID: {{ listing.id }} </h6>
+
+                {% if user == listing.user %}
+{#                    <h6 class="text-primary"><span class="badge badge-primary">This is your own listing</span></h6>#}
+                    <h6 class="text-primary">This is your own listing</h6>
+                {% endif %}
+            </div>
 
 
+            <div class="row">
 
-            <div class="card">
-                <h5 class="card-header">
-                    {% if user == listing.user and not grabbed_by %}
-                        Paying {{ listing.buying_currency }} - Getting {{ listing.selling_currency }}
-                        <a href="{% url 'update_listing' listing.id 'detail_listing' %}" class="btn btn-primary btn-sm ml-4" >Edit Listing</a>
-                        <a href="{% url 'delete_listing' listing.id %}" class="btn btn-danger btn-sm ml-4">Delete Listing</a>
-                    {% endif %}
-                </h5>
-                <div class="card-body">
-                    <h5 class="card-title">{{ listing.selling | intcomma }} {{ listing.selling_currency }}
-                        <i class="fas fa-angle-double-right"></i>
-{#                        <i class="flag flag-india"></i>#}
-                        {{ listing.buying | intcomma }} {{ listing.buying_currency }}
+                <div class="card">
+                    <h5 class="card-header">
+                        {% if user == listing.user and not grabbed_by %}
+                            Paying {{ listing.buying_currency }} - Getting {{ listing.selling_currency }}
+                            <a href="{% url 'update_listing' listing.id 'detail_listing' %}" class="btn btn-primary btn-sm ml-4" >Edit Listing</a>
+                            <a href="{% url 'delete_listing' listing.id %}" class="btn btn-danger btn-sm ml-4">Delete Listing</a>
+                        {% endif %}
                     </h5>
-                    <p class="card-text">
-                    <div class="row">
-                        <div class="col-md-12">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ listing.selling | intcomma }} {{ listing.selling_currency }}
+                            <i class="fas fa-angle-double-right"></i>
+    {#                        <i class="flag flag-india"></i>#}
+                            {{ listing.buying | intcomma }} {{ listing.buying_currency }}
+                        </h5>
+                        <p class="card-text">
+                        <div class="row">
+                            <div class="col-md-12">
 
-                            <!-- Fields -->
-                            <div class="row mb-5 fields">
-                                <div class="col-md-6">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item text-secondary">
-                                            <i class="fas fa-money-bill-alt"></i> Selling:
-                                            <span class="float-right">{{ listing.selling | intcomma }} {{ listing.selling_currency }}</span>
-                                        </li>
+                                <!-- Fields -->
+                                <div class="row mb-5 fields">
+                                    <div class="col-md-6">
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item text-secondary">
+                                                <i class="fas fa-money-bill-alt"></i> Selling:
+                                                <span class="float-right">{{ listing.selling | intcomma }} {{ listing.selling_currency }}</span>
+                                            </li>
 
-                                        <li class="list-group-item text-secondary">
-                                            <i class="fas fa-bed"></i> Fee:
-                                            <span class="float-right">{{ listing.service_fee | intcomma }} {{ listing.buying_currency }}</span>
-                                        </li>
-                                        <li class="list-group-item text-secondary">
-                                            <i class="fas fa-car"></i> Conversion rate:
-                                            <span class="float-right">1 {{ listing.selling_currency }} = {{ rate|floatformat:2|intcomma }} {{ listing.buying_currency }}</span>
-                                        </li>
-                                        <li class="list-group-item text-secondary">
-                                            <i class="fas fa-bed"></i> Status:
-                                            <span class="float-right">{{ listing.seller_deposited }}</span>
-                                        </li>
-                                        {#                                <li class="list-group-item text-secondary">#}
-                                        {#                                    <i class="fas fa-calendar"></i> Listing Date:#}
-                                        {#                                    <span class="float-right">{{ listing.created | naturalday }}</span>#}
-                                        {#                                </li>#}
-                                        <li class="list-group-item text-secondary">
-                                            <i class="fas fa-car"></i> Private sale:
-                                            <span class="float-right">Yes</span>
-                                        </li>
+                                            <li class="list-group-item text-secondary">
+                                                <i class="fas fa-bed"></i> Fee:
+                                                <span class="float-right">{{ listing.service_fee | intcomma }} {{ listing.buying_currency }}</span>
+                                            </li>
+                                            <li class="list-group-item text-secondary">
+                                                <i class="fas fa-car"></i> Conversion rate:
+                                                <span class="float-right">1 {{ listing.selling_currency }} = {{ rate|floatformat:2|intcomma }} {{ listing.buying_currency }}</span>
+                                            </li>
+                                            <li class="list-group-item text-secondary">
+                                                <i class="fas fa-bed"></i> Status:
+                                                <span class="float-right">{{ listing.seller_deposited }}</span>
+                                            </li>
+                                            {#                                <li class="list-group-item text-secondary">#}
+                                            {#                                    <i class="fas fa-calendar"></i> Listing Date:#}
+                                            {#                                    <span class="float-right">{{ listing.created | naturalday }}</span>#}
+                                            {#                                </li>#}
+                                            <li class="list-group-item text-secondary">
+                                                <i class="fas fa-car"></i> Private sale:
+                                                <span class="float-right">Yes</span>
+                                            </li>
 
-                                    </ul>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item text-secondary">
+                                                <i class="fas fa-th-large"></i> Buying:
+                                                <span class="float-right">{{ listing.buying | intcomma }} {{ listing.buying_currency }}</span>
+                                            </li>
+                                            <li class="list-group-item text-secondary">
+                                                <i class="fas fa-square"></i> Total to pay:
+                                                <span class="float-right">{{ listing.total | intcomma }} {{ listing.buying_currency }}</span>
+                                            </li>
+                                            <li class="list-group-item text-secondary">
+                                                <i class="fas fa-car"></i> Reverse rate:
+                                                <span class="float-right">1 {{ listing.buying_currency }} = {{ rate_reverse|floatformat:7|intcomma }} {{ listing.selling_currency }}</span>
+                                            </li>
+                                            <li class="list-group-item text-secondary">
+                                                <i class="fas fa-square"></i> User id:
+                                                <span class="float-right">{{ listing.user.id }} | {{ listing.user.first_name }}</span>
+                                            </li>
+                                            <li class="list-group-item text-secondary">
+                                                <i class="fas fa-calendar"></i> Grabbed by:
+                                                <span class="float-right">{{ grabbed_by }}</span>
+                                            </li>
+
+
+
+
+                                        </ul>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item text-secondary">
-                                            <i class="fas fa-th-large"></i> Buying:
-                                            <span class="float-right">{{ listing.buying | intcomma }} {{ listing.buying_currency }}</span>
-                                        </li>
-                                        <li class="list-group-item text-secondary">
-                                            <i class="fas fa-square"></i> Total to pay:
-                                            <span class="float-right">{{ listing.total | intcomma }} {{ listing.buying_currency }}</span>
-                                        </li>
-                                        <li class="list-group-item text-secondary">
-                                            <i class="fas fa-car"></i> Reverse rate:
-                                            <span class="float-right">1 {{ listing.buying_currency }} = {{ rate_reverse|floatformat:7|intcomma }} {{ listing.selling_currency }}</span>
-                                        </li>
-                                        <li class="list-group-item text-secondary">
-                                            <i class="fas fa-square"></i> User id:
-                                            <span class="float-right">{{ listing.user.id }} | {{ listing.user.first_name }}</span>
-                                        </li>
-                                        <li class="list-group-item text-secondary">
-                                            <i class="fas fa-calendar"></i> Grabbed by:
-                                            <span class="float-right">{{ grabbed_by }}</span>
-                                        </li>
 
+                                <div class="row mb-5">
 
+                                    <div class="col-md-4 d-flex justify-content-center">
 
+                                        <form action="{% url 'my_buyings' %}" method="POST">
+                                            {% csrf_token %}
+                                            {% if user.is_authenticated %}
+                                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                                {#                                    <input type="hidden" name="user_name" value="{{ user.first_name }}">#}
+                                                {#                                    <input type="hidden" name="user_email" value="{{ user.email }}">#}
+                                                {#                                    <input type="hidden" name="listing" value="{{ listing }}">#}
+                                                <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                                                {#                                    <input type="hidden" name="listing_owner"#}
+                                                {#                                           value="{{ listing.user.first_name }}">#}
+                                                {#                                    <input type="hidden" name="listing_owner_email" value="{{ listing.user.email }}">#}
+                                            {% else %}
+                                                <input type="hidden" name="user_id" value="0">
+                                            {% endif %}
+                                            {% if grabbed_by %}
+                                                <button class="btn btn-danger mb-4" data-toggle="tooltip"
+                                                        data-placement="bottom" title="Tooltip on bottom" value="Send">
+                                                    Grabbed
+                                                </button>
+                                            {% else %}
+                                                <button class="btn btn-primary mb-4" data-toggle="tooltip"
+                                                        data-placement="bottom" title="Tooltip on bottom" value="Send">
+                                                    Grab the deal
+                                                </button>
+                                            {% endif %}
 
-                                    </ul>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-4 d-flex justify-content-center">
+                                        <a href="{% url 'listings' %}" class="btn btn-primary mb-4" data-toggle="tooltip"
+                                           data-placement="bottom"
+                                           title="If it is not what you want, you may ask to change the amount but what you ask can't be further than +/-10% of the original amount. ">Ask
+                                            for different amount</a>
+                                    </div>
+                                    <div class="col-md-4 d-flex justify-content-center">
+                                        <a href="{% url 'listings' %}" class="btn btn-primary mb-4">Back To Listings</a>
+                                    </div>
+                                    </button>
+
                                 </div>
-                            </div>
 
-                            <div class="row mb-5">
-
-                                <div class="col-md-4 d-flex justify-content-center">
-
-                                    <form action="{% url 'my_buyings' %}" method="POST">
-                                        {% csrf_token %}
-                                        {% if user.is_authenticated %}
-                                            <input type="hidden" name="user_id" value="{{ user.id }}">
-                                            {#                                    <input type="hidden" name="user_name" value="{{ user.first_name }}">#}
-                                            {#                                    <input type="hidden" name="user_email" value="{{ user.email }}">#}
-                                            {#                                    <input type="hidden" name="listing" value="{{ listing }}">#}
-                                            <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                                            {#                                    <input type="hidden" name="listing_owner"#}
-                                            {#                                           value="{{ listing.user.first_name }}">#}
-                                            {#                                    <input type="hidden" name="listing_owner_email" value="{{ listing.user.email }}">#}
-                                        {% else %}
-                                            <input type="hidden" name="user_id" value="0">
-                                        {% endif %}
-                                        {% if grabbed_by %}
-                                            <button class="btn btn-danger mb-4" data-toggle="tooltip"
-                                                    data-placement="bottom" title="Tooltip on bottom" value="Send">
-                                                Grabbed
-                                            </button>
-                                        {% else %}
-                                            <button class="btn btn-primary mb-4" data-toggle="tooltip"
-                                                    data-placement="bottom" title="Tooltip on bottom" value="Send">
-                                                Grab the deal
-                                            </button>
-                                        {% endif %}
-
-                                    </form>
-                                </div>
-                                <div class="col-md-4 d-flex justify-content-center">
-                                    <a href="{% url 'listings' %}" class="btn btn-primary mb-4" data-toggle="tooltip"
-                                       data-placement="bottom"
-                                       title="If it is not what you want, you may ask to change the amount but what you ask can't be further than +/-10% of the original amount. ">Ask
-                                        for different amount</a>
-                                </div>
-                                <div class="col-md-4 d-flex justify-content-center">
-                                    <a href="{% url 'listings' %}" class="btn btn-primary mb-4">Back To Listings</a>
-                                </div>
-                                </button>
-
-                            </div>
-
-                            <!-- Description -->
-                            <div class="row mb-5">
-                                <div class="col-md-12">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia recusandae esse
-                                    reiciendis
-                                    officia omnis non rerum dicta
-                                    cupiditate nostrum molestias deserunt aut minus inventore animi atque, consequuntur
-                                    ad
-                                    fugit. Possimus culpa
-                                    blanditiis repellendus ipsa similique ullam, natus error dolor harum.
+                                <!-- Description -->
+                                <div class="row mb-5">
+                                    <div class="col-md-12">
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia recusandae esse
+                                        reiciendis
+                                        officia omnis non rerum dicta
+                                        cupiditate nostrum molestias deserunt aut minus inventore animi atque, consequuntur
+                                        ad
+                                        fugit. Possimus culpa
+                                        blanditiis repellendus ipsa similique ullam, natus error dolor harum.
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        </p>
+                        <a href="#" class="btn btn-primary">Go somewhere</a>
                     </div>
-                    </p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
                 </div>
             </div>
 

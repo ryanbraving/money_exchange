@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Dashboard
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+# from django.conf import settings
+# from accounts.models import User
+from django.contrib.auth import get_user_model
 from listings.models import Listing
 
 
@@ -13,7 +16,7 @@ def dashboard(request):
             messages.error(request, 'You need to login first')
             return redirect('login')
 
-        user = get_object_or_404(User, pk=user_id)
+        user = get_object_or_404(get_user_model(), pk=user_id)
 
         listing_id = request.POST['listing_id']
         listing = get_object_or_404(Listing, pk=listing_id)

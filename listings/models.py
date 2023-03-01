@@ -1,5 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+# from django.conf import settings
+# from accounts.models import User
+from django.contrib.auth import get_user_model
 import uuid
 from django.utils.timezone import datetime
 # from dashboards.models import Dashboard
@@ -22,7 +25,7 @@ class Listing(models.Model):
                   ('CAD', 'CAD'),
                   ('IRT', 'IRT')]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     # dashboard = models.ForeignKey(Dashboard, on_delete=models.CASCADE, blank=True)
     uuid = models.UUIDField(db_index=True, default=uuid.uuid4, unique=True, editable=False)
 

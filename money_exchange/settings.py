@@ -142,3 +142,5 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
     # 50: 'critical',
 }
+
+AUTH_USER_MODEL = 'accounts.User'
