@@ -21,12 +21,14 @@ from .models import User
     #
     # readonly_fields = ["password"]
 UserAdmin.fieldsets = (
-            (None, {"fields": ("uuid", "email", "username", "password")}),
+            (None, {"fields": ("uuid", "email", "password")}),
             ("Personal info", {"fields": ("first_name", "last_name")}),
             ("Permissions", {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")}),
             ("Important dates", {"fields": ("last_login", "date_joined")}),
 )
 
 UserAdmin.readonly_fields = ["uuid"]
+
+UserAdmin.search_fields = ['email', 'first_name', 'last_name', 'uuid']
 
 admin.site.register(User, UserAdmin)
