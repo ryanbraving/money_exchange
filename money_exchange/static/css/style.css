@@ -140,6 +140,17 @@ img {
     cursor: pointer;
 }
 
+/*.table-row-listing {*/
+/*    height:50px;*/
+/*}*/
+
+
+#listing .list-group-item {
+    height:50px;
+}
+/*.ryan{*/
+/*    height:50px;*/
+/*}*/
 
 
 /**,*/

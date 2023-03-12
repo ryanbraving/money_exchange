@@ -48,13 +48,34 @@ def dashboard(request):
 
     my_buyings = []
     my_sellings = []
+    # if 'my_buyings' in request.path:
+    # my_buyings = Dashboard.objects.filter(user=request.user.id).order_by('-grabbing_date')
+    # if 'my_sellings' in request.path:
+    # my_sellings = Listing.objects.filter(user=request.user.id).order_by('-created')
+
     if 'my_buyings' in request.path:
+        show_tab_selling = False
         my_buyings = Dashboard.objects.filter(user=request.user.id).order_by('-grabbing_date')
-    if 'my_sellings' in request.path:
+        # my_sellings = []
+    elif 'my_sellings' in request.path:
+        show_tab_selling = True
         my_sellings = Listing.objects.filter(user=request.user.id).order_by('-created')
+        # my_buyings = []
+
+    elif my_buyings and my_sellings:
+        if my_sellings[0].updated > my_buyings[0].grabbing_date:
+            show_tab_selling = True
+        else:
+            show_tab_selling = False
+    elif my_buyings:
+        show_tab_selling = False
+    else:
+        show_tab_selling = True
+
 
     contex = {'my_buyings': my_buyings,
-              'my_sellings': my_sellings}
+              'my_sellings': my_sellings,
+              'show_tab_selling': show_tab_selling}
     return render(request, 'dashboards/dashboard.html', contex)
 
 def my_sellings(request):

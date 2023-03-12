@@ -11,7 +11,7 @@ def register(request):
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
         # username = request.POST['username']
-        email = request.POST['email']
+        username = request.POST['email']
         password = request.POST['password']
         password2 = request.POST['password2']
 
@@ -22,12 +22,12 @@ def register(request):
             #     messages.error(request, 'That username is taken')
             #     return redirect('register')
             # else:
-            if get_user_model().objects.filter(email=email).exists():
+            if get_user_model().objects.filter(username=username).exists():
                 messages.error(request, 'That email is being used')
                 return redirect('register')
             else:
                 # Looks good
-                user = get_user_model().objects.create_user(email=email, password=password,
+                user = get_user_model().objects.create_user(username=username, password=password,
                                                             first_name=first_name, last_name=last_name)
                 # Login after register
                 # auth.login(request, user)
@@ -45,10 +45,10 @@ def register(request):
 
 def login(request):
     if request.method == 'POST':
-        email = request.POST['email']
+        username = request.POST['username']
         password = request.POST['password']
 
-        user = auth.authenticate(email=email, password=password)
+        user = auth.authenticate(username=username, password=password)
 
         if user is not None:
             auth.login(request, user)

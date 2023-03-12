@@ -16,7 +16,7 @@
                         <i class="fas fa-clock"></i> Created: {{ listing.created | timesince }} ago
                     </p>
                     <p class="lead">
-                        <i class="fas fa-user"></i> {{ listing.user.email }}
+                        <i class="fas fa-user"></i> {{ listing.user.username }}
                     </p>
                 </div>
             </div>
@@ -225,7 +225,8 @@
             <div class="row">
 
                 <div class="card">
-                    <h5 class="card-header d-flex justify-content-between">
+                    <h5 class="card-header d-flex flex-row justify-content-between">
+
                     <div>Listing ID: {{ listing.id }}</div>
                     {% if user == listing.user and not grabbed_by %}
                         <div>This is your own listing</div>
@@ -243,58 +244,85 @@
                             {{ listing.buying | intcomma }} {{ listing.buying_currency }}
                         </h5>
                         <p class="card-text">
-                        <div class="row">
+                        <div class="row flex-column">
                             <div class="col-md-12">
 
                                 <!-- Fields -->
-                                <div class="row mb-5 fields">
+                                <div class="row mb-5 fields ">
                                     <div class="col-md-6">
                                         <ul class="list-group list-group-flush">
+
                                             <li class="list-group-item text-secondary">
-                                                <i class="fas fa-money-bill-alt"></i> Selling:
-                                                <span class="float-right">{{ listing.selling | intcomma }} {{ listing.selling_currency }}</span>
+                                                {% if user == listing.user %}
+                                                    <i class="fas fa-money-bill-alt"></i> Selling:
+                                                    <span class="float-right">{{ listing.selling | intcomma }} {{ listing.selling_currency }}</span>
+                                                {% else %}
+                                                    <i class="fas fa-money-bill-alt"></i> Buying:
+                                                    <span class="float-right">{{ listing.buying | intcomma }} {{ listing.buying_currency }}</span>
+                                                {% endif %}
+                                            </li>
+
+
+                                            <li class="list-group-item text-secondary">
+                                                {% if user == listing.user %}
+                                                    <i class="fas fa-bed"></i> Fee:
+                                                    <span class="float-right">{{ listing.service_fee_sell | intcomma }} {{ listing.selling_currency }}</span>
+                                                {% else %}
+                                                    <i class="fas fa-bed"></i> Fee:
+                                                    <span class="float-right">{{ listing.service_fee_buy | intcomma }} {{ listing.buying_currency }}</span>
+                                                {% endif %}
                                             </li>
 
                                             <li class="list-group-item text-secondary">
-                                                <i class="fas fa-bed"></i> Fee:
-                                                <span class="float-right">{{ listing.service_fee | intcomma }} {{ listing.buying_currency }}</span>
+                                                {% if user == listing.user %}
+                                                    <h5><i class="fas fa-square"></i> You need to pay:
+                                                    <span class="float-right badge badge-dark badge-pill">{{ listing.seller_to_pay | intcomma }} {{ listing.selling_currency }}</span></h5>
+                                                {% else %}
+                                                    <h5><i class="fas fa-square"></i> You need to pay:
+                                                    <span class="float-right badge badge-dark badge-pill">{{ listing.buyer_to_pay | intcomma }} {{ listing.buying_currency }}</span></h5>
+                                                {% endif %}
                                             </li>
+
                                             <li class="list-group-item text-secondary">
                                                 <i class="fas fa-car"></i> Conversion rate:
-                                                <span class="float-right">1 {{ listing.selling_currency }} = {{ rate|floatformat:2|intcomma }} {{ listing.buying_currency }}</span>
+                                                <span class="float-right">1 {{ listing.selling_currency }} = {{ rate|floatformat:3|intcomma }} {{ listing.buying_currency }}</span>
                                             </li>
                                             <li class="list-group-item text-secondary">
                                                 <i class="fas fa-bed"></i> Status:
                                                 <span class="float-right">{{ listing.seller_deposited }}</span>
                                             </li>
+
                                             {#                                <li class="list-group-item text-secondary">#}
                                             {#                                    <i class="fas fa-calendar"></i> Listing Date:#}
                                             {#                                    <span class="float-right">{{ listing.created | naturalday }}</span>#}
                                             {#                                </li>#}
-                                            <li class="list-group-item text-secondary">
-                                                <i class="fas fa-car"></i> Private sale:
-                                                <span class="float-right">Yes</span>
-                                            </li>
+
 
                                         </ul>
                                     </div>
                                     <div class="col-md-6">
                                         <ul class="list-group list-group-flush">
                                             <li class="list-group-item text-secondary">
-                                                <i class="fas fa-th-large"></i> Buying:
-                                                <span class="float-right">{{ listing.buying | intcomma }} {{ listing.buying_currency }}</span>
+{#                                                <i class="fas fa-th-large"></i> Buying:#}
+{#                                                <span class="float-right">{{ listing.buying | intcomma }} {{ listing.buying_currency }}</span>#}
                                             </li>
                                             <li class="list-group-item text-secondary">
-                                                <i class="fas fa-square"></i> Total to pay:
-                                                <span class="float-right">{{ listing.total | intcomma }} {{ listing.buying_currency }}</span>
+{#                                                <i class="fas fa-bed"></i> Fee:#}
+{#                                                <span class="float-right">{{ listing.service_fee_buy | intcomma }} {{ listing.buying_currency }}</span>#}
+                                            </li>
+                                            <li class="list-group-item text-secondary">
+                                                {% if user == listing.user %}
+                                                    <h5><i class="fas fa-square"></i> You will receive:
+                                                    <span class="float-right badge badge-dark badge-pill">{{ listing.buying | intcomma }} {{ listing.buying_currency }}</span></h5>
+                                                {% else %}
+                                                    <h5><i class="fas fa-square"></i> You will receive:
+                                                    <span class="float-right badge badge-dark badge-pill">{{ listing.selling | intcomma }} {{ listing.selling_currency }}</span></h5>
+                                                {% endif %}
+
                                             </li>
                                             <li class="list-group-item text-secondary">
                                                 <i class="fas fa-car"></i> Reverse rate:
                                                 <span class="float-right">1 {{ listing.buying_currency }} = {{ rate_reverse|floatformat:7|intcomma }} {{ listing.selling_currency }}</span>
-                                            </li>
-                                            <li class="list-group-item text-secondary">
-                                                <i class="fas fa-square"></i> User id:
-                                                <span class="float-right">{{ listing.user.id }} | {{ listing.user.first_name }}</span>
                                             </li>
                                             <li class="list-group-item text-secondary">
                                                 <i class="fas fa-calendar"></i> Grabbed by:

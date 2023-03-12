@@ -3,7 +3,7 @@ currencies_choices = {
     'CAD': 'CAD',
     'AUD': 'AUD',
     'EUR': 'EUR',
-    'IRT': 'IRT',
+    'IRR': 'IRR',
 }
 
 how_much_choices = {

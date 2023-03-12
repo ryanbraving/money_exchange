@@ -10,6 +10,23 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
+# class ApplicationType(models.Model):
+#     created = models.DateTimeField(auto_now_add=True)
+#     modified = models.DateTimeField(auto_now=True)
+#     name = models.CharField(max_length=50, unique=True)
+#
+#     def __str__(self):
+#         return self.name
+
+
+class ServiceFee(models.Model):
+    created = models.DateTimeField(default=datetime.now)
+    # modified = models.DateTimeField(auto_now=True, editable=False)
+    selling_rate = models.DecimalField(max_digits=4, decimal_places=3, default=0.005)
+    buying_rate = models.DecimalField(max_digits=4, decimal_places=3, default=0.005)
+
+    def __str__(self):
+        return "Seller rate: {} --- Buyer rate: {}".format(self.selling_rate, self.buying_rate)
 
 class Listing(models.Model):
     YEAR_IN_SCHOOL_CHOICES = [
@@ -23,7 +40,7 @@ class Listing(models.Model):
                   ('USD', 'USD'),
                   ('MYR', 'MYR'),
                   ('CAD', 'CAD'),
-                  ('IRT', 'IRT')]
+                  ('IRR', 'IRR')]
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     # dashboard = models.ForeignKey(Dashboard, on_delete=models.CASCADE, blank=True)
@@ -32,7 +49,7 @@ class Listing(models.Model):
     selling = models.BigIntegerField(null=True)
     selling_currency = models.CharField(max_length=5, choices=sorted(CURRENCIES), default='CAD')
     buying = models.BigIntegerField(null=True)
-    buying_currency = models.CharField(max_length=5, choices=sorted(CURRENCIES), default='IRT')
+    buying_currency = models.CharField(max_length=5, choices=sorted(CURRENCIES), default='IRR')
     purpose = models.CharField(max_length=20, choices=sorted(YEAR_IN_SCHOOL_CHOICES), default='TUITION_FEE')
 
     # price = models.DecimalField(max_digits=2, decimal_places=1)
@@ -44,19 +61,34 @@ class Listing(models.Model):
     created = models.DateTimeField(default=datetime.now)
     updated = models.DateTimeField(default=datetime.now)
 
+    service_rate = models.ForeignKey(ServiceFee, on_delete=models.PROTECT)
+
     def __str__(self):
         return '{} {} -> {} {}'.format(self.selling, self.selling_currency, self.buying, self.buying_currency)
+
+    def save(self, *args, **kwargs):
+        self.service_rate = ServiceFee.objects.last()
+        super(Listing, self).save(*args, **kwargs)
 
     def seller_deposited(self):
         return 'Deposited' if self.is_seller_deposited else 'Not deposited'
 
     @property
-    def service_fee(self):
-        return int(self.buying * 0.005)
+    def service_fee_buy(self):
+        return float(self.buying * self.service_rate.buying_rate)
 
     @property
-    def total(self):
-        return int(self.buying + self.service_fee)
+    def service_fee_sell(self):
+        return float(self.selling * self.service_rate.selling_rate)
+
+    @property
+    def buyer_to_pay(self):
+        return float(self.buying + self.service_fee_buy)
+
+    @property
+    def seller_to_pay(self):
+        return float(self.selling + self.service_fee_sell)
 
     def get_absolute_url(self):
         return reverse('detail_listing', kwargs={'pk': self.pk})
+

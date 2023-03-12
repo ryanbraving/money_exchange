@@ -48,8 +48,8 @@
                                 class="nav-item mr-3"
                             {% endif %}
                     >
-                        <a class="nav-link" href="{% url 'my_sellings' %}">
-                            {{ user.username }} (Dashboard)</a>
+                        <a class="nav-link" href="{% url 'dashboard' %}">
+                            {{ user.first_name }} (Dashboard)</a>
                     </li>
                     <li class="nav-item mr-3">
                         <a class="nav-link" href="javascript:{document.getElementById('logout').submit()}">
