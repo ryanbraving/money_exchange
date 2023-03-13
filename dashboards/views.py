@@ -46,7 +46,7 @@ def dashboard(request):
         else:
             messages.error(request, 'You have already grabbed this ...')
 
-    my_buyings = Dashboard.objects.filter(user=request.user.id).order_by('-grabbing_date')
+    my_buyings = Dashboard.objects.filter(user=request.user.id).order_by('-grabbed_on')
     my_sellings = Listing.objects.filter(user=request.user.id).order_by('-created')
 
     if 'my_buyings' in request.path:
@@ -56,7 +56,7 @@ def dashboard(request):
         show_tab_selling = True
 
     elif my_buyings and my_sellings:
-        if my_sellings[0].updated > my_buyings[0].grabbing_date:
+        if my_sellings[0].updated > my_buyings[0].grabbed_on:
             show_tab_selling = True
         else:
             show_tab_selling = False

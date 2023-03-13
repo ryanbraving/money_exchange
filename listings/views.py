@@ -40,7 +40,7 @@ def index(request):
 def listing(request, pk):
     listing = get_object_or_404(Listing, pk=pk)
 
-    grabbed_by = Dashboard.objects.filter(listing=listing).order_by('grabbing_date').values_list('user__first_name',
+    grabbed_by = Dashboard.objects.filter(listing=listing).order_by('grabbed_on').values_list('user__first_name',
                                                                                                  flat=True)
     grabbed_by = ' | '.join(list(grabbed_by))
     context = {

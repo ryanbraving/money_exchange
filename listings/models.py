@@ -9,16 +9,6 @@ from django.utils.timezone import datetime
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-
-# class ApplicationType(models.Model):
-#     created = models.DateTimeField(auto_now_add=True)
-#     modified = models.DateTimeField(auto_now=True)
-#     name = models.CharField(max_length=50, unique=True)
-#
-#     def __str__(self):
-#         return self.name
-
-
 class ServiceFee(models.Model):
     created = models.DateTimeField(default=datetime.now)
     # modified = models.DateTimeField(auto_now=True, editable=False)
@@ -91,4 +81,3 @@ class Listing(models.Model):
 
     def get_absolute_url(self):
         return reverse('detail_listing', kwargs={'pk': self.pk})
-

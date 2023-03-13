@@ -22,7 +22,7 @@ class Dashboard(models.Model):
     # requester_email = models.CharField(max_length=100)
     request_to_change = models.CharField(max_length=20, choices=sorted(ASK_TO_CHANGE_MESSAGES), default='TUITION_FEE', blank=True)
     message = models.TextField(blank=True)
-    grabbing_date = models.DateTimeField(default=datetime.now, blank=True)
+    grabbed_on = models.DateTimeField(default=datetime.now, blank=True)
 
 
     def __str__(self):
