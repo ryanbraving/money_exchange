@@ -7,6 +7,7 @@ import uuid
 from django.utils.timezone import datetime
 # from dashboards.models import Dashboard
 from django.urls import reverse
+# from dashboards.models import Dashboard
 from django.utils.translation import gettext_lazy as _
 
 class ServiceFee(models.Model):
@@ -78,6 +79,10 @@ class Listing(models.Model):
     @property
     def seller_to_pay(self):
         return float(self.selling + self.service_fee_sell)
+
+    @property
+    def grabbed_by(self):
+        return self.dashboard_set.values_list('user_id', flat=True)
 
     def get_absolute_url(self):
         return reverse('detail_listing', kwargs={'pk': self.pk})
