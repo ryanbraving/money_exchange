@@ -1,9 +1,9 @@
+import uuid
 from django.db import models
 # from django.contrib.auth.models import User
 # from django.conf import settings
 # from accounts.models import User
 from django.contrib.auth import get_user_model
-import uuid
 from django.utils.timezone import datetime
 # from dashboards.models import Dashboard
 from django.urls import reverse
@@ -35,7 +35,9 @@ class Listing(models.Model):
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     # dashboard = models.ForeignKey(Dashboard, on_delete=models.CASCADE, blank=True)
-    uuid = models.UUIDField(db_index=True, default=uuid.uuid4, unique=True, editable=False)
+    # uuid = models.UUIDField(primary_key=True, db_index=True, default=uuid.uuid4, unique=True, editable=False)
+    uuid = models.CharField(primary_key=False, max_length=8, db_index=True, default=uuid.uuid4, editable=False, unique=True)
+    # id = models.BigAutoField(primary_key=False, db_index=True, editable=False, unique=True)
 
     selling = models.BigIntegerField(null=True)
     selling_currency = models.CharField(max_length=5, choices=sorted(CURRENCIES), default='CAD')
@@ -58,6 +60,7 @@ class Listing(models.Model):
         return '{} {} -> {} {}'.format(self.selling, self.selling_currency, self.buying, self.buying_currency)
 
     def save(self, *args, **kwargs):
+        self.uuid = str(self.uuid).split("-")[0]
         self.service_rate = ServiceFee.objects.last()
         super(Listing, self).save(*args, **kwargs)
 

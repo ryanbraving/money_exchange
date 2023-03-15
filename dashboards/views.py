@@ -18,12 +18,12 @@ def dashboard(request):
 
         user = get_object_or_404(get_user_model(), pk=user_id)
 
-        listing_id = request.POST['listing_id']
-        listing = get_object_or_404(Listing, pk=listing_id)
+        listing_pk = request.POST['listing_pk']
+        listing = get_object_or_404(Listing, pk=listing_pk)
 
         if listing.user.id == user_id:
             messages.error(request, "This is your own listing. You can't grab it")
-            return redirect('detail_listing', listing_id)
+            return redirect('detail_listing', listing_pk)
 
 
         # if user_id == listing.user.id:

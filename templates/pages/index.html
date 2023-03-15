@@ -128,7 +128,7 @@
                         </thead>
                         <tbody>
                         {% for listing in listings %}
-                            <tr class="text-center table-row" data-href="{% url 'detail_listing' listing.id %}">
+                            <tr class="text-center table-row" data-href="{% url 'detail_listing' listing.pk %}">
                                 {#                                    <th scope="row">1</th>#}
                                 {#                                    <td>{{ listing.created | timesince }}</td>#}
                                 <td class="col-4">{{ listing.selling | intcomma }} {{ listing.selling_currency }}</td>

@@ -85,10 +85,10 @@
                             <tbody>
                             {% for buying in my_buyings %}
                                 <tr>
-                                    <td class="col-1">{{ buying.id }}</td>
+                                    <td class="col-1">{{ buying.pk }}</td>
                                     <td class="col-5">{{ buying.listing }}</td>
                                     <td>
-                                        <a class="btn btn-light" href="{% url 'detail_listing' buying.listing.id %}">View
+                                        <a class="btn btn-light" href="{% url 'detail_listing' buying.listing.pk %}">View
                                             Listing</a>
                                     </td>
                                 </tr>
@@ -113,13 +113,13 @@
                             <tbody>
                             {% for selling in my_sellings %}
                                 <tr>
-                                    <td class="col-1">{{ selling.id }}</td>
-                                    <td class="col-5"><a href="{% url 'detail_listing' selling.id %}">{{ selling }}</a></td>
+                                    <td class="col-1">{{ selling.pk }}</td>
+                                    <td class="col-5"><a href="{% url 'detail_listing' selling.pk %}">{{ selling }}</a></td>
                                     <td class="col-6">
-{#                                        <a href="{% url 'detail_listing' selling.id %}" class="btn btn-primary mb-4">View#}
+{#                                        <a href="{% url 'detail_listing' selling.pk %}" class="btn btn-primary mb-4">View#}
 {#                                            Listing</a>#}
-                                        <a href="{% url 'update_listing' selling.id 'my_sellings' %}" class="btn btn-primary btn-sm ml-4">Edit</a>
-                                        <a href="{% url 'delete_listing' selling.id %}" class="btn btn-danger btn-sm ml-4">Delete</a>
+                                        <a href="{% url 'update_listing' selling.pk 'my_sellings' %}" class="btn btn-primary btn-sm ml-4">Edit</a>
+                                        <a href="{% url 'delete_listing' selling.pk %}" class="btn btn-danger btn-sm ml-4">Delete</a>
                                     </td>
                                 </tr>
                             {% endfor %}

@@ -213,7 +213,7 @@
 
 
             <div class="row d-flex justify-content-between">
-                <h6 class="text-primary">Listing ID: {{ listing.id }} </h6>
+                <h6 class="text-primary">Listing ID: {{ listing.pk }} </h6>
 
                 {% if user == listing.user %}
 {#                    <h6 class="text-primary"><span class="badge badge-primary">This is your own listing</span></h6>#}
@@ -227,13 +227,13 @@
                 <div class="card">
                     <h5 class="card-header d-flex flex-row justify-content-between">
 
-                    <div>Listing ID: {{ listing.id }}</div>
+                    <div>Listing ID: {{ listing.pk }}</div>
                     {% if user == listing.user and not grabbed_by %}
                         <div>This is your own listing</div>
 {#                            <p>This is your own listing</p>#}
                         <div>
-                            <a href="{% url 'update_listing' listing.id 'detail_listing' %}" class="btn btn-primary btn-sm ml-4" >Edit Listing</a>
-                            <a href="{% url 'delete_listing' listing.id %}" class="btn btn-danger btn-sm ml-4">Delete Listing</a>
+                            <a href="{% url 'update_listing' listing.pk 'detail_listing' %}" class="btn btn-primary btn-sm ml-4" >Edit Listing</a>
+                            <a href="{% url 'delete_listing' listing.pk %}" class="btn btn-danger btn-sm ml-4">Delete Listing</a>
                         </div>{% endif %}
 
                     </h5>
@@ -326,7 +326,22 @@
                                             </li>
                                             <li class="list-group-item text-secondary">
                                                 <i class="fas fa-calendar"></i> Grabbed by:
-                                                <span class="float-right">{{ grabbed_by }}</span>
+                                                {% with listing.grabbed_by.count as count %}
+                                                    {% if user.id in listing.grabbed_by %}
+                                                        {% if count >= 2 %}
+                                                            <span class="float-right">you & {{ count|add:-1 }} more</span>
+                                                        {% else %}
+                                                            <span class="float-right">you</span>
+                                                        {% endif %}
+
+                                                    {% else %}
+                                                        {% if count >= 1 %}
+                                                            <span class="float-right">{{ count }} person</span>
+                                                        {% else %}
+                                                            <span class="float-right">not grabbed yet</span>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endwith %}
                                             </li>
 
 
@@ -347,22 +362,22 @@
                                                 {#                                    <input type="hidden" name="user_name" value="{{ user.first_name }}">#}
                                                 {#                                    <input type="hidden" name="user_email" value="{{ user.email }}">#}
                                                 {#                                    <input type="hidden" name="listing" value="{{ listing }}">#}
-                                                <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                                                <input type="hidden" name="listing_id" value="{{ listing.pk }}">
                                                 {#                                    <input type="hidden" name="listing_owner"#}
                                                 {#                                           value="{{ listing.user.first_name }}">#}
                                                 {#                                    <input type="hidden" name="listing_owner_email" value="{{ listing.user.email }}">#}
                                             {% else %}
                                                 <input type="hidden" name="user_id" value="0">
                                             {% endif %}
-                                            {% if grabbed_by %}
+                                            {% if user.id in listing.grabbed_by %}
                                                 <button class="btn btn-danger mb-4" data-toggle="tooltip"
                                                         data-placement="bottom" title="Tooltip on bottom" value="Send">
-                                                    Grabbed
+                                                    You grabbed it
                                                 </button>
                                             {% else %}
                                                 <button class="btn btn-primary mb-4" data-toggle="tooltip"
                                                         data-placement="bottom" title="Tooltip on bottom" value="Send">
-                                                    Grab the deal
+                                                    Grab this listing
                                                 </button>
                                             {% endif %}
 
