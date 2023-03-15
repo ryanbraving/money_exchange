@@ -6,12 +6,15 @@ from listings.models import Listing
 # from django.conf import settings
 # from accounts.models import User
 from django.contrib.auth import get_user_model
+from money_exchange.utils import STATUS_CHOICES
 
 class Dashboard(models.Model):
     ASK_TO_CHANGE_MESSAGES = [('only_have', 'I only have ...')]
 
+    status = models.IntegerField(default=0, choices=sorted(STATUS_CHOICES), db_index=True)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,)
+
 
     # listing = models.CharField(max_length=200)
     # listing_id = models.IntegerField()

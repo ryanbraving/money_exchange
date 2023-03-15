@@ -9,6 +9,9 @@ from django.utils.timezone import datetime
 from django.urls import reverse
 # from dashboards.models import Dashboard
 from django.utils.translation import gettext_lazy as _
+from money_exchange.utils import STATUS_CHOICES
+
+
 
 class ServiceFee(models.Model):
     created = models.DateTimeField(default=datetime.now)
@@ -33,6 +36,7 @@ class Listing(models.Model):
                   ('CAD', 'CAD'),
                   ('IRR', 'IRR')]
 
+    status = models.IntegerField(default=0, choices=sorted(STATUS_CHOICES), db_index=True)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     # dashboard = models.ForeignKey(Dashboard, on_delete=models.CASCADE, blank=True)
     # uuid = models.UUIDField(primary_key=True, db_index=True, default=uuid.uuid4, unique=True, editable=False)

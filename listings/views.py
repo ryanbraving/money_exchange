@@ -13,14 +13,12 @@ from django.views import generic
 from django.contrib import messages
 from .forms import CreateListingForm
 from django.http import HttpResponseRedirect
-
-
-
+from money_exchange.utils import STATUSES
 
 
 
 def index(request):
-    listings = Listing.objects.order_by('-created').filter(is_published=True)
+    listings = Listing.objects.order_by('-created').filter(is_published=True, status=STATUSES['ENABLED'])
     paginator = Paginator(listings, 10)  # Show 6 listings per page
     page = request.GET.get('page')
     paged_listings = paginator.get_page(page)
@@ -38,7 +36,7 @@ def index(request):
 
 @login_required(login_url='login')
 def listing(request, pk):
-    listing = get_object_or_404(Listing, pk=pk)
+    listing = get_object_or_404(Listing, pk=pk, status=STATUSES['ENABLED'])
 
     # grabbed_by = Dashboard.objects.filter(listing=listing).order_by('grabbed_on').values_list('user__first_name',                                                                                flat=True)
     # grabbed_by = ' | '.join(list(grabbed_by))
@@ -52,7 +50,7 @@ def listing(request, pk):
 
 
 def search(request):
-    queryset_list = Listing.objects.order_by('-created').filter(is_published=True)
+    queryset_list = Listing.objects.order_by('-created').filter(is_published=True, status=STATUSES['ENABLED'])
 
     selling_currency = ''
     buying_currency = ''
@@ -109,7 +107,7 @@ class UpdateListing(LoginRequiredMixin, UpdateView):
 
     def get_queryset(self, *args, **kwargs):
         owner = self.request.user
-        return self.model.objects.filter(user=owner)
+        return self.model.objects.filter(user=owner, status=STATUSES['ENABLED'])
 
     def get_context_data(self, *args, **kwargs):
         context = super(UpdateListing, self).get_context_data(*args, **kwargs)
@@ -124,7 +122,7 @@ class DeleteListing(LoginRequiredMixin, generic.DeleteView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(user_id=self.request.user.id)
+        return queryset.filter(user_id=self.request.user.id, status=STATUSES['ENABLED'])
 
     def delete(self, *args, **kwargs):
         messages.success(self.request, "Post Deleted")
