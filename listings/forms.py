@@ -23,10 +23,10 @@ class CreateListingForm(forms.ModelForm):
             'buying': _('I want'),
             'is_published': _('publish')
         }
-        help_texts = {
-            'selling': _('you are selling'),
-            'buying': _('you are buying'),
-        }
+        # help_texts = {
+        #     'selling': _('you are selling'),
+        #     'buying': _('you are buying'),
+        # }
         # error_messages = {
         #     'selling': {
         #         'max_length': _("This writer's name is too long."),

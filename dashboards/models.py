@@ -1,6 +1,6 @@
 from django.db import models
 # from datetime import datetime
-from django.utils.timezone import datetime
+from django.utils import timezone
 from listings.models import Listing
 # from django.contrib.auth.models import User
 # from django.conf import settings
@@ -25,7 +25,7 @@ class Dashboard(models.Model):
     # requester_email = models.CharField(max_length=100)
     request_to_change = models.CharField(max_length=20, choices=sorted(ASK_TO_CHANGE_MESSAGES), default='TUITION_FEE', blank=True)
     message = models.TextField(blank=True)
-    grabbed_on = models.DateTimeField(default=datetime.now, blank=True)
+    grabbed_on = models.DateTimeField(default=timezone.now, blank=True)
 
 
     def __str__(self):

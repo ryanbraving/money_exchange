@@ -4,7 +4,7 @@ from listings.models import Listing, ServiceFee
 
 class ListingAdmin(admin.ModelAdmin):
     list_display = ('id', 'selling_currency', 'buying_currency', 'is_published', 'is_completed')
-    readonly_fields = ['created', 'updated', 'service_rate']
+    readonly_fields = ['created', 'updated', 'service_fee']
 
     # def has_change_permission(self, request, obj=None):
     #     return False

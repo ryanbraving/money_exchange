@@ -1,25 +1,23 @@
+version: '3.9'
+
 services:
-#  db:
-#    image: postgres:10-alpine
-#    container_name: db
-#    environment:
-#      - POSTGRES_DB=app
-#      - POSTGRES_USER=postgres
-#      - POSTGRES_PASSWORD=supersecretpassword
-#    volumes:
-#      - ./data/db:/var/lib/postgresql/data
+  db:
+    image: postgres:17.5-alpine
+    container_name: money-exchange-db
+    environment:
+      - POSTGRES_DB=${db_name}
+      - POSTGRES_USER=${db_user}
+      - POSTGRES_PASSWORD=${db_pass}
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/
 #    ports:
 #      - "5432:5432"
 
   app:
-    container_name: app
-    build:
-      context: .
+    container_name: money-exchange-app
+    build: .
+    command: sh -c "./wait-for-db.sh ${db_host} && python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
 
-    command: sh -c "python manage.py wait_for_db &&
-              python manage.py makemigrations &&
-              python manage.py migrate &&
-              python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:
@@ -31,5 +29,9 @@ services:
       - DB_HOST=${db_host}
       - DB_PORT=${db_port}
 
-#    depends_on:
-#      - db
+    depends_on:
+      - db
+
+
+volumes:
+  postgres_data:

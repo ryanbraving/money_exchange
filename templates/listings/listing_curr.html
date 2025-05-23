@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'listings' %}">Listings</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {{ listing.selling|intcomma }} {{ listing.selling_currency }} &raquo; {{ listing.buying|intcomma }} {{ listing.buying_currency }}
+            </li>
+        </ol>
+    </nav>
+
+    <!-- Exchange Status Progress Bar -->
+    <h5 class="mb-3 text-primary fw-bold">Exchange Status</h5>
+    <div class="progress mb-4 custom-progress">
+        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 20%;">
+            Listed
+        </div>
+        <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 20%;">Awaiting money (seller)</div>
+        <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 20%;">Awaiting buyer</div>
+        <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 20%;">Awaiting money (buyer)</div>
+        <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 20%;">Exchanged</div>
+    </div>
+
+    <!-- Listing Card -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span class="fw-bold">Listing ID: {{ listing.pk }}</span>
+            <div>
+                <a href="{% url 'detail_listing' listing.pk %}" class="btn btn-outline-primary btn-sm me-2"><i class="fas fa-edit"></i> Edit</a>
+                <a href="{% url 'delete_listing' listing.pk %}" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i> Delete</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <h4 class="fw-bold mb-3">
+                {{ listing.selling|intcomma }} {{ listing.selling_currency }}
+                <span class="text-secondary">&raquo;</span>
+                {{ listing.buying|intcomma }} {{ listing.buying_currency }}
+            </h4>
+            <div class="row mb-3">
+                <div class="col-md-6 mb-2">
+                    <i class="fas fa-money-bill-wave"></i> <strong>Selling:</strong> {{ listing.selling|intcomma }} {{ listing.selling_currency }}
+                </div>
+                <div class="col-md-6 mb-2">
+                    <i class="fas fa-wallet"></i> <strong>Fee:</strong>
+                    {% if user == listing.user %}
+                        {{ listing.service_fee_sell|intcomma }} {{ listing.selling_currency }}
+                    {% else %}
+                        {{ listing.service_fee_buy|intcomma }} {{ listing.buying_currency }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <!-- LEFT CARD: Add calculation breakdown under "$" -->
+                <div class="col-md-6">
+                    <div class="alert alert-secondary py-2 mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <strong class="fs-3">$ {{ listing.selling|intcomma }} {{ listing.selling_currency }}</strong>
+                            <span class="text-muted fw-semibold fs-6">What you will pay</span>
+                        </div>
+                        <!-- Calculation breakdown lines (smaller) -->
+                        <div class="d-flex justify-content-between align-items-center fs-6">
+                            <span>− ${{ listing.service_fee_sell|floatformat:2 }}</span>
+                            <span class="text-muted small">Our transfer fee</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center fs-6">
+                            <span>= ${{ net_selling|floatformat:2 }}</span>
+                            <span class="text-muted small">Total we’ll convert</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center fs-6">
+                            <span>&times; {{ rate|floatformat:8 }}</span>
+                            <span class="text-muted small">Exchange rate</span>
+                        </div>
+                        <hr class="my-2">
+                        <span class="small" style="font-weight: normal;">
+                            <i class="fas fa-wallet"></i>
+                            Fee: {{ listing.service_fee_sell|floatformat:2 }} {{ listing.selling_currency }}
+                        </span><br>
+                        <span class="small">
+                        Conversion rate: 1 {{ listing.selling_currency }} = {{ rate|floatformat:6 }} {{ listing.buying_currency }}
+                        </span>
+                    </div>
+                </div>
+                <!-- RIGHT CARD: Remains unchanged -->
+                <div class="col-md-6">
+                    <div class="alert alert-secondary py-2 mb-2">
+                        <strong>They will get: {{ buyer_get|intcomma }} {{ listing.buying_currency }}</strong><br>
+                        <span class="small" style="font-weight: normal;">
+                        </span><br>
+                        <span class="small">
+                        Reverse rate: 1 {{ listing.buying_currency }} = {{ reverse_rate|floatformat:6 }} {{ listing.selling_currency }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <!-- Status badges and action buttons below the cards -->
+            <div class="mb-3">
+                <span class="badge bg-info text-dark me-2"><i class="fas fa-info-circle"></i> Status: {{ status_display }}</span>
+                <span class="badge bg-secondary text-light"><i class="fas fa-users"></i> Grabbed by: {{ grabbed_by_display }}</span>
+            </div>
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                <a href="#" class="btn btn-primary">Grab this listing</a>
+                <a href="#" class="btn btn-outline-primary">Ask for different amount</a>
+                <a href="{% url 'listings' %}" class="btn btn-secondary">Back To Listings</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

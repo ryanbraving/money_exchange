@@ -82,14 +82,16 @@
                             {#                                    </select>#}
                             {#                                </div>#}
                             {#                            </div>#}
-
-                            <button id="form_index_page" class="btn btn-warning btn-block mt-4" type="submit">Search
-                            </button>
+                            <div class="d-grid mt-4">
+                                <button id="form_index_page" class="btn btn-warning" type="submit">Search listings</button>
+                            </div>
 
                         </form>
-                        <br>
-                        <h5> or</h5>
-                        <a type="button" class="btn btn-primary btn-block mt-4" href="{% url 'create_listing' %}">Create a new listing</a>
+{#                        <br>#}
+                        <h5 class="m-3">or</h5>
+                        <div class="d-grid">
+                            <a type="button" class="btn btn-primary" href="{% url 'create_listing' %}">Create a new listing</a>
+                        </div>
                     </div>
                 </div>
             </div>

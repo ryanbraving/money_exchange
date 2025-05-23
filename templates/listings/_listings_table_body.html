@@ -1,0 +1,23 @@
+{% load humanize %}
+{% for listing in listings %}
+<tr class="table-row" data-href="{% url 'detail_listing' listing.pk %}">
+    <td>{{ listing.selling|intcomma }} {{ listing.selling_currency }}</td>
+    <td>{{ listing.exchange_rate_annotated|default:listing.exchange_rate|floatformat:0 }}</td>
+    <td>{{ listing.buying|intcomma }} {{ listing.buying_currency }}</td>
+    <td>
+        {% with listing.grabbed_by.count as count %}
+            {% if count >= 2 and user.id in listing.grabbed_by %}
+                <span class="badge bg-secondary fw-bold">grabbed by: you & {{ count|add:-1 }}</span>
+            {% elif count == 1 and user.id in listing.grabbed_by %}
+                <span class="badge bg-secondary fw-bold">grabbed by: you</span>
+            {% else %}
+                <span class="badge bg-primary fw-bold">available</span>
+            {% endif %}
+        {% endwith %}
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="4" class="text-center">No Listings Available</td>
+</tr>
+{% endfor %}

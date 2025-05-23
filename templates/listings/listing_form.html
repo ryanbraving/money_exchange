@@ -1,46 +1,49 @@
-{% extends 'base.html' %}
-{% load bootstrap4 %}
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
 {% block content %}
-    <div class="container">
-        <br>
-        <br>
-                        <form method="post">{% csrf_token %}
-                            {% bootstrap_form form %}
-                            <br>
-                            <button type="submit" class="btn btn-primary">Create</button>
-                        </form>
-
-
-{#        <form action="{% url 'create_listing' %}" method="post">#}
-{#            <div class="form-group row">#}
-{#                <div class="form-group col-md-9">#}
-{#                    <label for="sellingNumber">I have:</label>#}
-{#                    <input type="int" class="form-control" id="sellingNumber" aria-describedby="sellingNumberHelp"#}
-{#                           placeholder="1,000" value="{{ listing }}">#}
-{#                    <small id="sellingNumberHelp" class="form-text text-muted">Enter the number you are selling</small>#}
-{#                </div>#}
-{#                <div class="form-group col-md-3">#}
-{#                    <label for="inputState">Selling currency</label>#}
-{#                    <select id="inputState" class="form-control">#}
-{#                        <option selected>Currencies ...</option>#}
-{#                        <option>...</option>#}
-{#                    </select>#}
-{#                </div>#}
-{##}
-{#            </div>#}
-{#            <div class="form-group row">#}
-{#                <label for="sellingCurrency">Selling currency</label>#}
-{#                <input type="text" class="form-control" id="sellingCurrency" placeholder="Currency"#}
-{#                       value="{{ selling_currency }}">#}
-{#            </div>#}
-{#            <div class="form-check row">#}
-{#                <input type="checkbox" class="form-check-input" id="exampleCheck1">#}
-{#                <label class="form-check-label" for="exampleCheck1">Check me out</label>#}
-{#            </div>#}
-{#            <button type="create" class="btn btn-primary row">Create</button>#}
-{#        </form>#}
-        <br>
-        <br>
+<div class="d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+    <div class="card shadow-lg border-0" style="width: 100%; max-width: 420px;">
+        <div class="card-body p-4">
+            <h4 class="card-title text-center mb-4">Create Listing</h4>
+            <form method="post" autocomplete="off">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">I have</label>
+                    <div class="row g-2">
+                        <div class="col-9">
+                            {{ form.selling|add_class:"form-control" }}
+                        </div>
+                        <div class="col-3">
+                            {{ form.selling_currency|add_class:"form-select" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">I want</label>
+                    <div class="row g-2">
+                        <div class="col-9">
+                            {{ form.buying|add_class:"form-control" }}
+                        </div>
+                        <div class="col-3">
+                            {{ form.buying_currency|add_class:"form-select" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="id_purpose" class="form-label">Purpose</label>
+                    {{ form.purpose|add_class:"form-select" }}
+                </div>
+                <div class="form-check mb-3">
+                    {{ form.is_published|add_class:"form-check-input" }}
+                    <label class="form-check-label" for="id_is_published">Publish</label>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">Create</button>
+                </div>
+            </form>
+        </div>
     </div>
-
+</div>
 {% endblock %}

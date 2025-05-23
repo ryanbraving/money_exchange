@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Breadcrumb and Title -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'index' %}">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'listings' %}{% if request.GET %}?{{ request.GET.urlencode }}{% endif %}">Listings</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    Listing Details: {{ listing.selling|intcomma }} {{ listing.selling_currency }} &raquo; {{ listing.buying|intcomma }} {{ listing.buying_currency }}
+                </li>
+            </ol>
+        </nav>
+        <a href="{% url 'create_listing' %}" class="btn btn-primary">Create new selling</a>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="mb-4">
+        <h6 class="mb-2 text-primary fw-bold">Exchange Status</h6>
+        <div class="progress custom-progress" style="height: 1.5rem;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 20%;">
+                Listed
+            </div>
+            <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 20%;">Awaiting money (seller)</div>
+            <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 20%;">Awaiting buyer</div>
+            <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 20%;">Awaiting money (buyer)</div>
+            <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 20%;">Exchanged</div>
+        </div>
+    </div>
+
+    <!-- Unified Card Header -->
+    <div class="card-header d-flex justify-content-between align-items-center mb-4" style="border-radius: 1.5rem 1.5rem 0 0;">
+        <span>Listing ID: {{ listing.pk }}</span>
+        <div>
+            <a href="{% url 'update_listing' listing.pk 'detail_listing' %}" class="btn btn-outline-primary btn-sm me-2" data-bs-toggle="tooltip" title="Edit this listing">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+            <a href="{% url 'delete_listing' listing.pk %}" class="btn btn-outline-danger btn-sm" data-bs-toggle="tooltip" title="Delete this listing">
+                <i class="fas fa-trash"></i> Delete
+            </a>
+        </div>
+    </div>
+
+    <!-- Two-column layout -->
+    <div class="row">
+        <!-- Left: All exchange info in a single card -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow rounded-4 p-4 border-0">
+                <!-- You send -->
+                <div class="exchange-card mb-0" style="border:none; box-shadow:none; padding:0; margin-bottom:1.5rem;">
+                    <div class="exchange-title">You send</div>
+                    <div class="exchange-amount-row">
+                        <span class="exchange-amount">${{ listing.selling|floatformat:2|intcomma }}</span>
+                        <span class="exchange-currency">
+                            <img src="{{ flag_selling }}" class="me-2" alt="{{ listing.selling_currency }}" style="vertical-align:middle;">
+                            {{ listing.selling_currency }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Calculation breakdown -->
+                <div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-icon">−</span>
+                        <span class="breakdown-amount">${{ listing.service_fee_sell|floatformat:2|intcomma }}</span>
+                        <span class="breakdown-label">Our transfer fee</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-icon">=</span>
+                        <span class="breakdown-amount">${{ net_selling|floatformat:2|intcomma }}</span>
+                        <span class="breakdown-label">Total we’ll convert</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="breakdown-icon">&times;</span>
+                        <span class="breakdown-amount">{{ rate|floatformat:8 }}</span>
+                        <span class="breakdown-label">Exchange rate</span>
+                    </div>
+                </div>
+
+                <!-- Your recipient gets -->
+                <div class="exchange-card mb-0 mt-4" style="border:none; box-shadow:none; padding:0;">
+                    <div class="exchange-title">Your recipient gets</div>
+                    <div class="exchange-amount-row">
+                        <span class="exchange-amount">${{ buyer_get|floatformat:2|intcomma }}</span>
+                        <span class="exchange-currency">
+                            <img src="{{ flag_buying }}" class="me-2" alt="{{ listing.buying_currency }}" style="vertical-align:middle;">
+                            {{ listing.buying_currency }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Right: Placeholder card -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow rounded-4 p-4 border-0 h-100 d-flex align-items-center justify-content-center">
+                <div class="text-muted text-center">
+                    <h5>Coming Soon</h5>
+                    <p>This section will be developed later.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

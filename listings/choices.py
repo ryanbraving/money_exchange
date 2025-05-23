@@ -4,6 +4,7 @@ currencies_choices = {
     'AUD': 'AUD',
     'EUR': 'EUR',
     'IRR': 'IRR',
+    'USD': 'USD',
 }
 
 how_much_choices = {

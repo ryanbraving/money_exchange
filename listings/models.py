@@ -4,7 +4,7 @@ from django.db import models
 # from django.conf import settings
 # from accounts.models import User
 from django.contrib.auth import get_user_model
-from django.utils.timezone import datetime
+from django.utils import timezone
 # from dashboards.models import Dashboard
 from django.urls import reverse
 # from dashboards.models import Dashboard
@@ -14,13 +14,13 @@ from money_exchange.utils import STATUS_CHOICES
 
 
 class ServiceFee(models.Model):
-    created = models.DateTimeField(default=datetime.now)
+    created = models.DateTimeField(default=timezone.now)
     # modified = models.DateTimeField(auto_now=True, editable=False)
-    selling_rate = models.DecimalField(max_digits=4, decimal_places=3, default=0.005)
-    buying_rate = models.DecimalField(max_digits=4, decimal_places=3, default=0.005)
+    selling_fee = models.DecimalField(max_digits=4, decimal_places=3, default=0.005)
+    buying_fee = models.DecimalField(max_digits=4, decimal_places=3, default=0.005)
 
     def __str__(self):
-        return "Seller rate: {} --- Buyer rate: {}".format(self.selling_rate, self.buying_rate)
+        return "Selling fee: {} --- Buying fee: {}".format(self.selling_fee, self.buying_fee)
 
 class Listing(models.Model):
     YEAR_IN_SCHOOL_CHOICES = [
@@ -55,17 +55,17 @@ class Listing(models.Model):
     is_buyer_deposited = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)
 
-    created = models.DateTimeField(default=datetime.now)
-    updated = models.DateTimeField(default=datetime.now)
+    created = models.DateTimeField(default=timezone.now)
+    updated = models.DateTimeField(default=timezone.now)
 
-    service_rate = models.ForeignKey(ServiceFee, on_delete=models.PROTECT)
+    service_fee = models.ForeignKey(ServiceFee, on_delete=models.PROTECT, null=True)
 
     def __str__(self):
         return '{} {} -> {} {}'.format(self.selling, self.selling_currency, self.buying, self.buying_currency)
 
     def save(self, *args, **kwargs):
         self.uuid = str(self.uuid).split("-")[0]
-        self.service_rate = ServiceFee.objects.last()
+        self.service_fee = ServiceFee.objects.last()
         super(Listing, self).save(*args, **kwargs)
 
     def seller_deposited(self):
@@ -73,11 +73,11 @@ class Listing(models.Model):
 
     @property
     def service_fee_buy(self):
-        return float(self.buying * self.service_rate.buying_rate)
+        return float(self.buying * self.service_fee.buying_fee)
 
     @property
     def service_fee_sell(self):
-        return float(self.selling * self.service_rate.selling_rate)
+        return float(self.selling * self.service_fee.selling_fee)
 
     @property
     def buyer_to_pay(self):
@@ -93,3 +93,8 @@ class Listing(models.Model):
 
     def get_absolute_url(self):
         return reverse('detail_listing', kwargs={'pk': self.pk})
+
+    @property
+    def exchange_rate(self):
+        return self.buying / self.selling
+

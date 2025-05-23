@@ -1,57 +1,60 @@
 {% load static %}
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+{#<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">#}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+{#<nav class="navbar navbar-expand-lg sticky-top" style="background-color: #222242;">#}
+
     <div class="container">
-        <a class="navbar-brand" href="{% url 'index' %}">
-            <img src="{% static '/img/logo1.png' %}" class="logo" alt="">
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup">
+<!--        <a class="navbar-brand" href="{% url 'index' %}">-->
+<!--            <img src="{% static '/img/splash.png' %}" class="d-inline-block align-top" style="height: 40px;">-->
+<!--        </a>-->
+        <span class="navbar-brand" href="/">SPLASH</span>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <ul class="navbar-nav">
-                <li
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a href="{% url 'index' %}" aria-current="page"
                         {% if '/' == request.path %}
-                            class="nav-item active mr-3"
+                           class="nav-link active"
                         {% else %}
-                            class="nav-item mr-3"
+                            class="nav-link"
                         {% endif %}
-                >
-                    <a class="nav-link" href="{% url 'index' %}">Home</a>
+                    >Home</a>
                 </li>
-                <li
+                <li class="nav-item">
+                    <a href="{% url 'about' %}"
                         {% if '/about' in request.path %}
-                            class="nav-item active mr-3"
+                            class="nav-link active"
                         {% else %}
-                            class="nav-item mr-3"
+                            class="nav-link"
                         {% endif %}
-                >
-                    <a class="nav-link" href="{% url 'about' %}">About</a>
+                    >About</a>
                 </li>
-                <li
+                <li class="nav-item">
+                    <a href="{% url 'listings' %}"
                         {% if '/listings' in request.path %}
-                            class="nav-item active mr-3"
+                            class="nav-link active"
                         {% else %}
-                            class="nav-item mr-3"
+                            class="nav-link"
                         {% endif %}
-                >
-                    <a class="nav-link" href="{% url 'listings' %}">Listings</a>
+                    >Listings</a>
                 </li>
             </ul>
 
             <ul class="navbar-nav ml-auto">
                 {% if user.is_authenticated %}
-                    <li
+                    <li class="nav-item">
+                        <a href="{% url 'dashboard' %}"
                             {% if 'dashboards' in request.path %}
-                                class="nav-item active mr-3"
+                                class="nav-link active"
                             {% else %}
-                                class="nav-item mr-3"
+                                class="nav-link"
                             {% endif %}
-                    >
-                        <a class="nav-link" href="{% url 'dashboard' %}">
-                            {{ user.first_name }} (Dashboard)</a>
+                        >{{ user.first_name }} (Dashboard)</a>
                     </li>
-                    <li class="nav-item mr-3">
+                    <li class="nav-item">
                         <a class="nav-link" href="javascript:{document.getElementById('logout').submit()}">
                             <i class="fas fa-sign-out-alt"></i> Logout
                         </a>
@@ -62,26 +65,18 @@
                     </li>
 
                 {% else %}
-                    <li
+                    <li class="nav-item">
+                        <a href="{% url 'register' %}"
                             {% if 'register' in request.path %}
-                                class="nav-item active mr-3"
+                                class="nav-link active"
                             {% else %}
-                                class="nav-item mr-3"
+                                class="nav-link"
                             {% endif %}
-                    >
-                        <a class="nav-link" href="{% url 'register' %}">
-                            <i class="fas fa-user-plus"></i> Register</a>
+                        ><i class="fas fa-user-plus"></i> Register</a>
                     </li>
-                    <li
-                            {% if '/login' in request.path %}
-                                class="nav-item active mr-3"
-                            {% else %}
-                                class="nav-item mr-3"
-                            {% endif %}
-                    >
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'login' %}">
                             <i class="fas fa-sign-in-alt"></i>
-
                             Login</a>
                     </li>
                 {% endif %}

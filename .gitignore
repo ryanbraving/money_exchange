@@ -6,9 +6,10 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 /media
-/static
+/staticfiles
 env
 venv
 .DS_Store
 .idea
 .env
+postgres_data

@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load persian_digits %}
+
+{% block content %}
+<div class="container mt-4" dir="rtl" lang="fa" style="font-family: 'Shabnam', Tahoma, Arial, sans-serif;">
+
+    <!-- Import Shabnam from CDN -->
+    <link href="https://cdn.fontcdn.ir/Font/Persian/Shabnam/Shabnam.css" rel="stylesheet" type="text/css" />
+
+    <!-- Breadcrumb and Title -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'index' %}">
+                        <i class="fas fa-home"></i> خانه
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'listings' %}">لیست‌ها</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    جزئیات لیست: {{ listing.selling|intcomma|persian_digits }} {{ listing.selling_currency }} &raquo; {{ listing.buying|intcomma|persian_digits }} {{ listing.buying_currency }}
+                </li>
+            </ol>
+        </nav>
+        <a href="{% url 'create_listing' %}" class="btn btn-primary">ایجاد فروش جدید</a>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="mb-4">
+        <h6 class="mb-2 text-primary fw-bold">وضعیت تبادل</h6>
+        <div class="progress custom-progress" style="height: 1.5rem;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 20%;">
+                ثبت شده
+            </div>
+            <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 20%;">در انتظار واریز (فروشنده)</div>
+            <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 20%;">در انتظار خریدار</div>
+            <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 20%;">در انتظار واریز (خریدار)</div>
+            <div class="progress-bar bg-light text-dark" role="progressbar" style="width: 20%;">تبادل شده</div>
+        </div>
+    </div>
+
+    <!-- Unified Card Header -->
+    <div class="card-header d-flex justify-content-between align-items-center mb-4" style="border-radius: 1.5rem 1.5rem 0 0;">
+        <span>شناسه لیست: {{ listing.pk|persian_digits }}</span>
+        <div>
+            <a href="{% url 'detail_listing' listing.pk %}" class="btn btn-outline-primary btn-sm ms-2" data-bs-toggle="tooltip" title="ویرایش این لیست">
+                <i class="fas fa-edit"></i> ویرایش
+            </a>
+            <a href="{% url 'delete_listing' listing.pk %}" class="btn btn-outline-danger btn-sm" data-bs-toggle="tooltip" title="حذف این لیست">
+                <i class="fas fa-trash"></i> حذف
+            </a>
+        </div>
+    </div>
+
+    <!-- Two-column layout -->
+    <div class="row">
+        <!-- Left: Exchange Info in a Card -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow rounded-4 p-4 border-0 mb-4">
+                <!-- Exchange Card: You send -->
+                <div class="exchange-card mb-0" style="border:none; box-shadow:none; padding:0;">
+                    <div class="exchange-title">شما ارسال می‌کنید</div>
+                    <div class="exchange-amount-row">
+                        <span class="exchange-amount">${{ listing.selling|floatformat:2|intcomma|persian_digits }}</span>
+                        <span class="exchange-currency">
+                            <img src="{{ flag_selling }}" class="ms-2" alt="{{ listing.selling_currency }}" style="vertical-align:middle;">
+                            {{ listing.selling_currency }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculation breakdown -->
+            <div>
+                <div class="breakdown-row">
+                    <span class="breakdown-icon">−</span>
+                    <span class="breakdown-amount">${{ listing.service_fee_sell|floatformat:2|intcomma|persian_digits }}</span>
+                    <span class="breakdown-label">کارمزد انتقال ما</span>
+                </div>
+                <div class="breakdown-row">
+                    <span class="breakdown-icon">=</span>
+                    <span class="breakdown-amount">${{ net_selling|floatformat:2|intcomma|persian_digits }}</span>
+                    <span class="breakdown-label">مبلغ قابل تبدیل</span>
+                </div>
+                <div class="breakdown-row">
+                    <span class="breakdown-icon">&times;</span>
+                    <span class="breakdown-amount">{{ rate|floatformat:8|persian_digits }}</span>
+                    <span class="breakdown-label">نرخ تبدیل</span>
+                </div>
+            </div>
+
+            <!-- Exchange Card: Your recipient gets -->
+            <div class="card shadow rounded-4 p-4 border-0 mt-4">
+                <div class="exchange-card mb-0" style="border:none; box-shadow:none; padding:0;">
+                    <div class="exchange-title">گیرنده شما دریافت می‌کند</div>
+                    <div class="exchange-amount-row">
+                        <span class="exchange-amount">${{ buyer_get|floatformat:2|intcomma|persian_digits }}</span>
+                        <span class="exchange-currency">
+                            <img src="{{ flag_buying }}" class="ms-2" alt="{{ listing.buying_currency }}" style="vertical-align:middle;">
+                            {{ listing.buying_currency }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Right: Placeholder -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow rounded-4 p-4 border-0 h-100 d-flex align-items-center justify-content-center">
+                <div class="text-muted text-center">
+                    <h5>به زودی</h5>
+                    <p>این بخش بعداً توسعه خواهد یافت.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
