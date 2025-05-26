@@ -1,13 +1,14 @@
 console.log("listings.js loaded");
 
 function attachRowClickHandlers() {
+    console.log('Attaching row click handlers...');
     document.querySelectorAll('.table-row').forEach(row => {
         row.onclick = function(e) {
             if (e.target.tagName.toLowerCase() === 'a') return;
             const href = this.getAttribute('data-href');
+            const query = window.location.search;
+            console.log('Row clicked. href:', href, 'query:', query);
             if (href) {
-                // Append current query string to detail view
-                const query = window.location.search;
                 window.location.href = href + query;
             }
         };
@@ -15,11 +16,10 @@ function attachRowClickHandlers() {
 }
 
 function updateBreadcrumbListingsLink() {
-    const query = window.location.search;
+    let lastQuery = localStorage.getItem('listings_last_query') || window.location.search;
     const link = document.getElementById('breadcrumb-listings-link');
-    console.log('Updating breadcrumb link:', link, query);
     if (link) {
-        link.href = '/listings/' + query;
+        link.href = '/listings/' + lastQuery;
     }
 }
 
@@ -40,12 +40,16 @@ function ajaxUpdateTable(url = null) {
     }
 
     let fetchUrl = `/listings/table-partial/?${params.toString()}`;
+    let newUrl = `/listings/?${params.toString()}`;
+
+    // Store the last query string
+    localStorage.setItem('listings_last_query', '?' + params.toString());
 
     fetch(fetchUrl)
         .then(response => response.json())
         .then(data => {
             document.getElementById('listings-table-body').innerHTML = data.html;
-            window.history.pushState({}, '', fetchUrl.replace('/table-partial', ''));
+            window.history.pushState({}, '', newUrl);
             attachAjaxLinkHandlers();
             attachRowClickHandlers();
             updateBreadcrumbListingsLink();
@@ -64,6 +68,7 @@ function attachAjaxLinkHandlers() {
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('selling-currency').addEventListener('change', function() {
         ajaxUpdateTable();
+        ajaxUpdateTable();
     });
     document.getElementById('buying-currency').addEventListener('change', function() {
         ajaxUpdateTable();
@@ -71,4 +76,19 @@ document.addEventListener('DOMContentLoaded', function() {
     attachAjaxLinkHandlers();
     attachRowClickHandlers();
     updateBreadcrumbListingsLink();
+
+    // Prevent navigation if already on the listings page
+    const listingsLink = document.getElementById('breadcrumb-listings-link');
+    if (listingsLink) {
+        listingsLink.addEventListener('click', function(e) {
+            if (window.location.pathname === '/listings/') {
+                e.preventDefault();
+            }
+        });
+    }
+});
+
+// Handle browser navigation (back/forward)
+window.addEventListener('popstate', function(event) {
+    ajaxUpdateTable(window.location.href);
 });

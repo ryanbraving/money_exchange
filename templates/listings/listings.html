@@ -13,7 +13,7 @@
                     </a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    <a id="breadcrumb-listings-link" href="{% url 'listings' %}">Listings</a>
+                    <a id="breadcrumb-listings-link" href="{% url 'listings' %}{% if request.GET %}?{{ request.GET.urlencode }}{% endif %}">Listings</a>
                 </li>
             </ol>
         </nav>
